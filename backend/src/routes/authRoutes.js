@@ -3,7 +3,8 @@ const {
   register,
   login,
   logout,
-  githubLogin
+  githubLogin,
+  returnUser
 } = require('../controllers/authController')
 const passport = require('../passport')
 
@@ -24,5 +25,7 @@ router.get(
   }),
   githubLogin
 )
+
+router.get('/user', returnUser)
 
 module.exports = router

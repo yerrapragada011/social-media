@@ -71,4 +71,19 @@ const githubLogin = async (req, res) => {
   })
 }
 
-module.exports = { register, login, logout, githubLogin }
+const returnUser = async (req, res) => {
+  if (req.user) {
+    res.json({
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email,
+        profilePictureUrl: req.user.profilePictureUrl
+      }
+    })
+  } else {
+    res.status(401).json({ error: 'No user is authenticated' })
+  }
+}
+
+module.exports = { register, login, logout, githubLogin, returnUser }
