@@ -11,6 +11,7 @@ const passport = require('./passport')
 const authRoutes = require('./routes/authRoutes')
 const postRoutes = require('./routes/postRoutes')
 const commentRoutes = require('./routes/commentRoutes')
+const likeRoutes = require('./routes/likeRoutes')
 
 const app = express()
 
@@ -48,6 +49,7 @@ app.use(express.static(path.join(__dirname, '../../frontend/build')))
 app.use('/', authRoutes)
 app.use('/posts', postRoutes)
 app.use('/posts/:id', commentRoutes)
+app.use('/posts/:id', likeRoutes)
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'))
