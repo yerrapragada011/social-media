@@ -62,3 +62,10 @@ model FollowRequest {
   follower  User     @relation("UserFollowers", fields: [followerId], references: [id])
   following User     @relation("UserFollowing", fields: [followingId], references: [id])
 }
+
+model session {
+  id        Int      @id @default(autoincrement())
+  sid       String   @unique
+  sess      Json
+  expire    DateTime
+}
