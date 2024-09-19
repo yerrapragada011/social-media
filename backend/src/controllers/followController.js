@@ -84,4 +84,39 @@ const deleteFollowRequest = async (req, res) => {
   }
 }
 
-module.exports = { sendFollowRequest, acceptFollowRequest, deleteFollowRequest }
+const getFollowRequests = async (req, res) => {
+  const userId = Number(req.params.id)
+
+  if (req.user.id !== userId) {
+    return res.status(403).json({ message: 'Unauthorized' })
+  }
+
+  try {
+    const followRequests = await prisma.followRequest.findMany({
+      where: {
+        followingId: userId,
+        status: 'pending'
+      },
+      include: {
+        follower: {
+          select: {
+            id: true,
+            username: true,
+            profilePictureUrl: true
+          }
+        }
+      }
+    })
+
+    res.json(followRequests)
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch follow requests' })
+  }
+}
+
+module.exports = {
+  sendFollowRequest,
+  acceptFollowRequest,
+  deleteFollowRequest,
+  getFollowRequests
+}
