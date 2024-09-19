@@ -13,6 +13,7 @@ const postRoutes = require('./routes/postRoutes')
 const commentRoutes = require('./routes/commentRoutes')
 const likeRoutes = require('./routes/likeRoutes')
 const followRoutes = require('./routes/followRoutes')
+const userRoutes = require('./routes/userRoutes')
 
 const app = express()
 
@@ -52,6 +53,7 @@ app.use('/posts', postRoutes)
 app.use('/posts/:id', commentRoutes)
 app.use('/posts/:id', likeRoutes)
 app.use('/users', followRoutes)
+app.use('/users', userRoutes)
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'))
