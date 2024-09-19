@@ -62,4 +62,13 @@ const logout = async (req, res) => {
   })
 }
 
-module.exports = { register, login, logout }
+const githubLogin = async (req, res) => {
+  req.login(req.user, (err) => {
+    if (err) {
+      return res.status(500).json({ message: 'GitHub login failed' })
+    }
+    res.redirect('/profile')
+  })
+}
+
+module.exports = { register, login, logout, githubLogin }
