@@ -16,7 +16,7 @@ function Register() {
         body: JSON.stringify({ email, password, username })
       })
       const data = await response.json()
-      if (data.user) {
+      if (data.user || response.ok) {
         navigate('/dashboard')
       } else {
         alert('Registration failed')

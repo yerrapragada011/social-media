@@ -37,7 +37,7 @@ app.use(
     }),
     secret: 'secret',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       secure: false,
@@ -45,6 +45,9 @@ app.use(
     }
   })
 )
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(express.static(path.join(__dirname, '../../frontend/build')))
 
@@ -58,9 +61,6 @@ app.use('/users', userRoutes)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'))
 })
-
-app.use(passport.initialize())
-app.use(passport.session())
 
 const PORT = process.env.PORT || 8000
 

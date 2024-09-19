@@ -73,8 +73,10 @@ function App() {
               </>
             ) : (
               <>
-                <Link to='/'>Login</Link>
-                <Link to='/register'>Register</Link>
+                <div style={{ display: 'flex', gap: '20px' }}>
+                  <Link to='/'>Login</Link>
+                  <Link to='/register'>Register</Link>
+                </div>
               </>
             )}
           </nav>

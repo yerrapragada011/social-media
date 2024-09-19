@@ -2,6 +2,9 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const GitHubStrategy = require('passport-github2').Strategy
 const bcrypt = require('bcrypt')
+const { PrismaClient } = require('@prisma/client')
+
+const prisma = new PrismaClient()
 
 passport.use(
   new LocalStrategy(async (email, password, done) => {

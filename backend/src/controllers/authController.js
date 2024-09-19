@@ -13,6 +13,13 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'Email already in use' })
     }
 
+    const existingUsername = await prisma.user.findUnique({
+      where: { username }
+    })
+    if (existingUsername) {
+      return res.status(400).json({ message: 'Username already in use' })
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const newUser = await prisma.user.create({
@@ -23,7 +30,7 @@ const register = async (req, res) => {
       }
     })
 
-    req.login(newUser, (err) => {
+    req.logIn(newUser, (err) => {
       if (err)
         return res
           .status(500)
@@ -31,6 +38,7 @@ const register = async (req, res) => {
       res.json({ message: 'Registration and login successful', user: newUser })
     })
   } catch (error) {
+    console.error('Error during registration:', error)
     res.status(500).json({ error: 'Registration failed' })
   }
 }
@@ -40,7 +48,7 @@ const login = async (req, res, next) => {
     if (err) return next(err)
     if (!user) return res.status(400).json({ message: 'Invalid credentials' })
 
-    req.login(user, (err) => {
+    req.logIn(user, (err) => {
       if (err) return res.status(500).json({ message: 'Login failed' })
       res.json({ message: 'Login successful', user })
     })
@@ -63,7 +71,7 @@ const logout = async (req, res) => {
 }
 
 const githubLogin = async (req, res) => {
-  req.login(req.user, (err) => {
+  req.logIn(req.user, (err) => {
     if (err) {
       return res.status(500).json({ message: 'GitHub login failed' })
     }
