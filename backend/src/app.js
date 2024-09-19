@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser')
 const path = require('path')
 const passport = require('./passport')
 const authRoutes = require('./routes/authRoutes')
+const postRoutes = require('./routes/postRoutes')
 
 const app = express()
 
@@ -44,6 +45,7 @@ app.use(
 app.use(express.static(path.join(__dirname, '../../frontend/build')))
 
 app.use('/', authRoutes)
+app.use('/posts', postRoutes)
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'))
