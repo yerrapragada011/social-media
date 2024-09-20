@@ -49,7 +49,7 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use(express.static(path.join(__dirname, '../../frontend/build')))
+// app.use(express.static(path.join(__dirname, '../../frontend/build')))
 
 app.use('/', authRoutes)
 app.use('/posts', postRoutes)
@@ -58,9 +58,9 @@ app.use('/posts/:id', likeRoutes)
 app.use('/users', followRoutes)
 app.use('/users', userRoutes)
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'))
-})
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'))
+// })
 
 const PORT = process.env.PORT || 8000
 

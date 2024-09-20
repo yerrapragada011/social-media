@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-function CreatePost({ onPostCreated }) {
+function CreatePost() {
+  const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -15,12 +18,16 @@ function CreatePost({ onPostCreated }) {
       const response = await fetch('/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content })
+        body: JSON.stringify({ title, content })
       })
-      const data = await response.json()
-      setContent('')
-      if (onPostCreated) {
-        onPostCreated(data)
+
+      if (response.ok) {
+        alert('Post created successfully')
+        setTitle('')
+        setContent('')
+        navigate('/dashboard')
+      } else {
+        alert('Failed to create post')
       }
     } catch (error) {
       console.error('Failed to create post', error)
@@ -31,6 +38,15 @@ function CreatePost({ onPostCreated }) {
     <div>
       <h2>Create a New Post</h2>
       <form onSubmit={handleSubmit}>
+        <div>
+          <label>Title</label>
+          <input
+            type='text'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
         <div>
           <textarea
             value={content}

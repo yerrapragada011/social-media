@@ -12,6 +12,7 @@ import Dashboard from './components/Dashboard'
 import Profile from './components/Profile'
 import FollowRequests from './components/FollowRequests'
 import CreatePost from './components/CreatePost'
+import PostDetail from './components/PostDetail'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -66,10 +67,13 @@ function App() {
           <nav>
             {user ? (
               <>
-                <button onClick={handleLogout}>Logout</button>
-                <Link to='/dashboard'>Dashboard</Link>
-                <Link to={`/profile/${user.id}`}>Profile</Link>
-                <Link to='/follow-requests'>Follow Requests</Link>
+                <div style={{ display: 'flex', gap: '20px' }}>
+                  <button onClick={handleLogout}>Logout</button>
+                  <Link to='/dashboard'>Dashboard</Link>
+                  <Link to={`/profile/${user.id}`}>Profile</Link>
+                  <Link to='/follow-requests'>Follow Requests</Link>
+                  <Link to='/create-post'>Create Post</Link>
+                </div>
               </>
             ) : (
               <>
@@ -128,6 +132,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <CreatePost />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/posts/:postId'
+              element={
+                <ProtectedRoute>
+                  <PostDetail />
                 </ProtectedRoute>
               }
             />

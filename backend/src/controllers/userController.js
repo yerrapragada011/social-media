@@ -5,7 +5,20 @@ const getUser = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: Number(req.params.id) },
-      include: { posts: true, followers: true, following: true }
+      include: {
+        posts: {
+          include: {
+            author: true,
+            comments: {
+              include: {
+                author: true
+              }
+            }
+          }
+        },
+        followers: true,
+        following: true
+      }
     })
     if (!user) return res.status(404).json({ message: 'User not found' })
     res.json(user)

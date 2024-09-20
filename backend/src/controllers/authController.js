@@ -45,12 +45,18 @@ const register = async (req, res) => {
 
 const login = async (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    if (err) return next(err)
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' })
+    if (err) {
+      return next(err)
+    }
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials', info })
+    }
 
     req.logIn(user, (err) => {
-      if (err) return res.status(500).json({ message: 'Login failed' })
-      res.json({ message: 'Login successful', user })
+      if (err) {
+        return res.status(500).json({ message: 'Login failed', error: err })
+      }
+      return res.json({ message: 'Login successful', user })
     })
   })(req, res, next)
 }

@@ -4,31 +4,41 @@ import { useNavigate } from 'react-router-dom'
 function Login({ onLogin }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+
     try {
       const response = await fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       })
+
       const data = await response.json()
-      if (data.user) {
+
+      if (response.ok && data.user) {
         onLogin(data.user)
         navigate('/dashboard')
       } else {
-        alert('Login failed')
+        setError(data.message || 'Login failed')
       }
     } catch (error) {
-      alert('Login failed')
+      setError('Something went wrong, please try again later')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
     <div>
       <h1>Login</h1>
+      {error && <p style={{ color: 'red' }}>{error}</p>}{' '}
       <form onSubmit={handleLogin}>
         <div>
           <label>Email:</label>
@@ -48,7 +58,9 @@ function Login({ onLogin }) {
             required
           />
         </div>
-        <button type='submit'>Login</button>
+        <button type='submit' disabled={isLoading}>
+          {isLoading ? 'Logging in...' : 'Login'}
+        </button>
       </form>
     </div>
   )
