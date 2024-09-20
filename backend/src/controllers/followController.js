@@ -50,6 +50,16 @@ const acceptFollowRequest = async (req, res) => {
       where: { id: followRequest.id },
       data: { status: 'accepted' }
     })
+
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        followers: {
+          connect: { id: followerId }
+        }
+      }
+    })
+
     res.json(acceptedRequest)
   } catch (error) {
     res.status(500).json({ error: 'Failed to accept follow request' })
@@ -114,9 +124,63 @@ const getFollowRequests = async (req, res) => {
   }
 }
 
+const getFollowers = async (req, res) => {
+  const userId = Number(req.params.id)
+
+  try {
+    const followers = await prisma.followRequest.findMany({
+      where: {
+        followingId: userId,
+        status: 'accepted'
+      },
+      include: {
+        follower: {
+          select: {
+            id: true,
+            username: true,
+            profilePictureUrl: true
+          }
+        }
+      }
+    })
+
+    res.json(followers)
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch followers' })
+  }
+}
+
+const getFollowing = async (req, res) => {
+  const userId = Number(req.params.id)
+
+  try {
+    const following = await prisma.followRequest.findMany({
+      where: {
+        followerId: userId,
+        status: 'accepted'
+      },
+      include: {
+        following: {
+          select: {
+            id: true,
+            username: true,
+            profilePictureUrl: true
+          }
+        }
+      }
+    })
+
+    res.json(following)
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch following' })
+  }
+}
+
 module.exports = {
   sendFollowRequest,
   acceptFollowRequest,
   deleteFollowRequest,
-  getFollowRequests
+  getFollowRequests,
+  getFollowers,
+  getFollowing
 }

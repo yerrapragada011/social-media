@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 function FollowRequests() {
   const [followRequests, setFollowRequests] = useState([])
   const [users, setUsers] = useState([])
+  const { userId } = useParams()
 
   useEffect(() => {
     const fetchFollowRequests = async () => {
       try {
-        const response = await fetch('/users/follow-requests')
+        const response = await fetch(`/users/${userId}/follow-requests`)
         const data = await response.json()
         setFollowRequests(data)
       } catch (error) {
@@ -27,7 +29,7 @@ function FollowRequests() {
 
     fetchFollowRequests()
     fetchUsers()
-  }, [])
+  }, [userId])
 
   const handleAccept = async (id) => {
     try {
@@ -48,6 +50,25 @@ function FollowRequests() {
       )
     } catch (error) {
       console.error('Failed to decline follow request')
+    }
+  }
+
+  const handleSendFollowRequest = async (id) => {
+    try {
+      const response = await fetch(`/users/${id}/follow`, { method: 'POST' })
+      if (response.ok) {
+        alert('Follow request sent!')
+        setUsers(
+          users.map((user) =>
+            user.id === id ? { ...user, requestStatus: 'pending' } : user
+          )
+        )
+      } else {
+        const errorData = await response.json()
+        alert(errorData.message || 'Failed to send follow request')
+      }
+    } catch (error) {
+      console.error('Failed to send follow request', error)
     }
   }
 
@@ -75,7 +96,13 @@ function FollowRequests() {
         users.map((user) => (
           <div key={user.id}>
             <span>{user.username}</span>
-            <button>Send Follow Request</button>
+            {user.requestStatus === 'pending' ? (
+              <span>Request Pending</span>
+            ) : (
+              <button onClick={() => handleSendFollowRequest(user.id)}>
+                Send Follow Request
+              </button>
+            )}
           </div>
         ))
       ) : (

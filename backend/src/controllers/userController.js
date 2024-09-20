@@ -8,19 +8,30 @@ const getUser = async (req, res) => {
       include: {
         posts: {
           include: {
-            author: true,
-            comments: {
-              include: {
-                author: true
-              }
-            }
+            author: true
           }
         },
-        followers: true,
-        following: true
+        comments: true,
+        likes: {
+          include: {
+            post: true
+          }
+        },
+        following: {
+          include: {
+            following: true
+          }
+        },
+        followers: {
+          include: {
+            follower: true
+          }
+        }
       }
     })
+
     if (!user) return res.status(404).json({ message: 'User not found' })
+
     res.json(user)
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch user profile' })

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Post from './Post'
 
-function Dashboard() {
+function Dashboard({ user }) {
   const [posts, setPosts] = useState([])
 
   useEffect(() => {
@@ -21,11 +21,15 @@ function Dashboard() {
   return (
     <div>
       <h1>Dashboard</h1>
-      {posts.length > 0 ? (
-        posts.map((post) => <Post key={post.id} post={post} />)
-      ) : (
-        <p>No posts yet</p>
-      )}
+      <p>Welcome, {user?.username}!</p>
+      <h1>Posts:</h1>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {posts.length > 0 ? (
+          posts.map((post) => <Post key={post.id} post={post} />)
+        ) : (
+          <p>No posts yet</p>
+        )}
+      </div>
     </div>
   )
 }

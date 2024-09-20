@@ -71,7 +71,9 @@ function App() {
                   <button onClick={handleLogout}>Logout</button>
                   <Link to='/dashboard'>Dashboard</Link>
                   <Link to={`/profile/${user.id}`}>Profile</Link>
-                  <Link to='/follow-requests'>Follow Requests</Link>
+                  <Link to={`/${user.id}/follow-requests`}>
+                    Follow Requests
+                  </Link>
                   <Link to='/create-post'>Create Post</Link>
                 </div>
               </>
@@ -107,7 +109,7 @@ function App() {
               path='/dashboard'
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <Dashboard user={user} />
                 </ProtectedRoute>
               }
             />
@@ -120,7 +122,7 @@ function App() {
               }
             />
             <Route
-              path='/follow-requests'
+              path='/:userId/follow-requests'
               element={
                 <ProtectedRoute>
                   <FollowRequests />
