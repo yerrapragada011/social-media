@@ -18,19 +18,26 @@ const newPost = async (req, res) => {
 }
 
 const getAllPosts = async (req, res) => {
+  const userId = req.user.id
+
   try {
+    const followers = await prisma.followRequest.findMany({
+      where: {
+        followerId: userId,
+        status: 'accepted'
+      },
+      select: {
+        followingId: true
+      }
+    })
+
     const posts = await prisma.post.findMany({
       where: {
         OR: [
-          { authorId: req.user.id },
+          { authorId: userId },
           {
-            author: {
-              followers: {
-                some: {
-                  followerId: req.user.id,
-                  status: 'accepted'
-                }
-              }
+            authorId: {
+              in: followers.map((f) => f.followingId)
             }
           }
         ]
@@ -42,8 +49,11 @@ const getAllPosts = async (req, res) => {
       },
       orderBy: { createdAt: 'desc' }
     })
+
+    console.log('Fetched posts:', posts)
     res.json(posts)
   } catch (error) {
+    console.error('Error fetching posts:', error)
     res.status(500).json({ error: 'Failed to fetch posts' })
   }
 }
