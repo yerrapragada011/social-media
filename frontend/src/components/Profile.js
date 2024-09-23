@@ -48,6 +48,30 @@ function Profile() {
       }
 
       fetchFollowing()
+    } else if (activeTab === 'comments') {
+      const fetchUserComments = async () => {
+        try {
+          const response = await fetch(`/posts/${userId}/user-comments`)
+          const data = await response.json()
+          setUser((prevUser) => ({ ...prevUser, comments: data }))
+        } catch (error) {
+          console.error('Failed to fetch user comments')
+        }
+      }
+
+      fetchUserComments()
+    } else if (activeTab === 'likes') {
+      const fetchUserLikedPosts = async () => {
+        try {
+          const response = await fetch(`/posts/${userId}/liked-posts`)
+          const data = await response.json()
+          setUser((prevUser) => ({ ...prevUser, likes: data }))
+        } catch (error) {
+          console.error('Failed to fetch liked posts')
+        }
+      }
+
+      fetchUserLikedPosts()
     }
   }, [activeTab, userId])
 
@@ -131,10 +155,12 @@ function Profile() {
             {user.comments && user.comments.length > 0 ? (
               user.comments.map((comment) => (
                 <div key={comment.id}>
-                  <p>
-                    {comment.content} on post:{' '}
-                    <strong>{comment.post.title}</strong>
-                  </p>
+                  <p>'{comment.content}' on post:</p>
+                  {comment.post ? (
+                    <Post post={comment.post} />
+                  ) : (
+                    <em>(Post no longer exists)</em>
+                  )}
                 </div>
               ))
             ) : (
@@ -151,9 +177,7 @@ function Profile() {
             style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
           >
             {user.likes && user.likes.length > 0 ? (
-              user.likes.map((like) => (
-                <Post key={like.post.id} post={like.post} />
-              ))
+              user.likes.map((post) => <Post key={post.id} post={post} />)
             ) : (
               <p>No liked posts to display</p>
             )}

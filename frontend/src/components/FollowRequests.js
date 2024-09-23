@@ -58,11 +58,7 @@ function FollowRequests() {
       const response = await fetch(`/users/${id}/follow`, { method: 'POST' })
       if (response.ok) {
         alert('Follow request sent!')
-        setUsers(
-          users.map((user) =>
-            user.id === id ? { ...user, requestStatus: 'pending' } : user
-          )
-        )
+        setUsers(users.filter((user) => user.id !== id))
       } else {
         const errorData = await response.json()
         alert(errorData.message || 'Failed to send follow request')
@@ -96,13 +92,9 @@ function FollowRequests() {
         users.map((user) => (
           <div key={user.id}>
             <span>{user.username}</span>
-            {user.requestStatus === 'pending' ? (
-              <span>Request Pending</span>
-            ) : (
-              <button onClick={() => handleSendFollowRequest(user.id)}>
-                Send Follow Request
-              </button>
-            )}
+            <button onClick={() => handleSendFollowRequest(user.id)}>
+              Send Follow Request
+            </button>
           </div>
         ))
       ) : (

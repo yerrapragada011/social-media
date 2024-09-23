@@ -7,6 +7,9 @@ function PostDetail() {
   const [loading, setLoading] = useState(true)
   const [liked, setLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(0)
+  const [newComment, setNewComment] = useState('')
+  const [comments, setComments] = useState([])
+  const [currentUserId, setCurrentUserId] = useState(null)
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -15,8 +18,9 @@ function PostDetail() {
         const data = await response.json()
         setPost(data)
         setLikesCount(data.likes.length)
-        // Check if the current user has already liked the post
-        setLiked(data.likes.some((like) => like.userId === data.currentUserId)) // Assuming the API returns currentUserId
+        setLiked(data.likes.some((like) => like.userId === data.currentUserId))
+        setComments(data.comments)
+        setCurrentUserId(data.currentUserId)
       } catch (error) {
         console.error('Error fetching post details', error)
       } finally {
@@ -32,11 +36,7 @@ function PostDetail() {
       const response = await fetch(`/posts/${postId}/like`, { method: 'POST' })
 
       if (response.ok) {
-        if (liked) {
-          setLikesCount(likesCount - 1)
-        } else {
-          setLikesCount(likesCount + 1)
-        }
+        setLikesCount(likesCount + (liked ? -1 : 1))
         setLiked(!liked)
       } else {
         alert('Error liking/unliking the post')
@@ -46,8 +46,52 @@ function PostDetail() {
     }
   }
 
-  if (loading) return <div>Loading...</div>
+  const handleAddComment = async () => {
+    if (newComment.trim() === '') {
+      alert('Comment cannot be empty')
+      return
+    }
 
+    try {
+      const response = await fetch(`/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content: newComment })
+      })
+
+      if (response.ok) {
+        const comment = await response.json()
+        setComments([...comments, comment])
+        setNewComment('')
+      } else {
+        alert('Error adding comment')
+      }
+    } catch (error) {
+      console.error('Failed to add comment', error)
+    }
+  }
+
+  const handleDeleteComment = async (commentId) => {
+    if (window.confirm('Are you sure you want to delete this comment?')) {
+      try {
+        const response = await fetch(`/posts/${postId}/comments/${commentId}`, {
+          method: 'DELETE'
+        })
+
+        if (response.ok) {
+          setComments(comments.filter((comment) => comment.id !== commentId))
+        } else {
+          alert('Error deleting comment')
+        }
+      } catch (error) {
+        console.error('Failed to delete comment', error)
+      }
+    }
+  }
+
+  if (loading) return <div>Loading...</div>
   if (!post) return <div>Post not found</div>
 
   return (
@@ -59,18 +103,35 @@ function PostDetail() {
         <strong>Likes: {likesCount}</strong>{' '}
         <button onClick={handleLikeUnlike}>{liked ? 'Unlike' : 'Like'}</button>
       </div>
+
       <div>
         <h3>Comments</h3>
-        {post.comments.length > 0 ? (
-          post.comments.map((comment) => (
+        {comments.length > 0 ? (
+          comments.map((comment) => (
             <div key={comment.id}>
               <strong>{comment.author.username}: </strong>
               {comment.content}
+              {(comment.author.id === currentUserId ||
+                post.author.id === currentUserId) && (
+                <button onClick={() => handleDeleteComment(comment.id)}>
+                  Delete
+                </button>
+              )}
             </div>
           ))
         ) : (
           <p>No comments yet</p>
         )}
+
+        <div>
+          <input
+            type='text'
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder='Add a comment'
+          />
+          <button onClick={handleAddComment}>Submit</button>
+        </div>
       </div>
     </div>
   )

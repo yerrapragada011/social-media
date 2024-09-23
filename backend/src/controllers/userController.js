@@ -14,7 +14,9 @@ const getUser = async (req, res) => {
         comments: true,
         likes: {
           include: {
-            post: true
+            post: {
+              include: { author: true }
+            }
           }
         },
         following: {

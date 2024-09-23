@@ -28,4 +28,22 @@ const likeAndUnlike = async (req, res) => {
   }
 }
 
-module.exports = { likeAndUnlike }
+const getUserLikedPosts = async (req, res) => {
+  try {
+    const userId = Number(req.params.id)
+    const likedPosts = await prisma.like.findMany({
+      where: { userId: userId },
+      include: {
+        post: {
+          include: { author: true }
+        }
+      }
+    })
+
+    res.json(likedPosts.map((like) => like.post))
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch liked posts' })
+  }
+}
+
+module.exports = { likeAndUnlike, getUserLikedPosts }
