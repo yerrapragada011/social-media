@@ -104,7 +104,6 @@ function App() {
               path='/register'
               element={<Register onLogin={handleLogin} />}
             />
-
             <Route
               path='/dashboard'
               element={

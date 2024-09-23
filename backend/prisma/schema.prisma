@@ -18,8 +18,8 @@ model User {
   username          String   @unique
   email             String   @unique
   password          String?
-  githubId          String?  // For GitHub OAuth
-  profilePictureUrl String?  // Use Gravatar or GitHub
+  githubId          String?  @unique
+  profilePictureUrl String?  
   posts             Post[]
   comments          Comment[]
   likes             Like[]

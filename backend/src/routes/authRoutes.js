@@ -7,6 +7,7 @@ const {
   returnUser
 } = require('../controllers/authController')
 const passport = require('../passport')
+const { ensureAuthenticated } = require('../middleware/ensureAuthenticated')
 
 const router = express.Router()
 
@@ -16,7 +17,9 @@ router.post('/login', login)
 
 router.post('/logout', logout)
 
-router.get('/github', passport.authenticate('github'))
+router.get('/github', (req, res, next) => {
+  passport.authenticate('github')(req, res, next)
+})
 
 router.get(
   '/github/callback',
@@ -26,6 +29,6 @@ router.get(
   githubLogin
 )
 
-router.get('/user', returnUser)
+router.get('/user', ensureAuthenticated, returnUser)
 
 module.exports = router

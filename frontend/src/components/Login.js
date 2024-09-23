@@ -35,10 +35,14 @@ function Login({ onLogin }) {
     }
   }
 
+  const handleGitHubLogin = () => {
+    window.location.replace('http://localhost:8000/github')
+  }
+
   return (
     <div>
       <h1>Login</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}{' '}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleLogin}>
         <div>
           <label>Email:</label>
@@ -62,6 +66,13 @@ function Login({ onLogin }) {
           {isLoading ? 'Logging in...' : 'Login'}
         </button>
       </form>
+      <button
+        onClick={handleGitHubLogin}
+        style={{ marginTop: '5px' }}
+        disabled={isLoading}
+      >
+        {isLoading ? 'Logging in...' : 'Login with GitHub'}
+      </button>
     </div>
   )
 }

@@ -30,19 +30,29 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: '/auth/github/callback'
+      callbackURL: '/github/callback',
+      scope: ['user:email']
     },
     async (accessToken, refreshToken, profile, done) => {
       let user = await prisma.user.findUnique({
         where: { githubId: profile.id }
       })
       if (!user) {
+        const email =
+          profile.emails && profile.emails.length > 0
+            ? profile.emails[0].value
+            : null
+
+        if (!email) {
+          return done(new Error('No email found for the user'))
+        }
+
         user = await prisma.user.create({
           data: {
             githubId: profile.id,
-            username: profile.username,
-            email: profile.emails[0].value,
-            profilePictureUrl: profile.photos[0].value
+            username: profile.username || profile.displayName,
+            email: email,
+            profilePictureUrl: profile.photos?.[0]?.value || null
           }
         })
       }

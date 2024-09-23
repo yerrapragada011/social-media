@@ -6,7 +6,7 @@ const session = require('express-session')
 const pgSession = require('connect-pg-simple')(session)
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const path = require('path')
+// const path = require('path')
 const passport = require('./passport')
 const authRoutes = require('./routes/authRoutes')
 const postRoutes = require('./routes/postRoutes')
@@ -48,6 +48,7 @@ app.use(
 
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(express.json())
 
 // app.use(express.static(path.join(__dirname, '../../frontend/build')))
 

@@ -81,7 +81,7 @@ const githubLogin = async (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'GitHub login failed' })
     }
-    res.redirect('/profile')
+    res.redirect('http://localhost:3000/dashboard')
   })
 }
 
