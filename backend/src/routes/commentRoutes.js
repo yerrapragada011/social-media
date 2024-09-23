@@ -4,8 +4,8 @@ const { ensureAuthenticated } = require('../middleware/ensureAuthenticated')
 
 const router = express.Router()
 
-router.post('/comments', ensureAuthenticated, addComment)
+router.post('/:id/comments', ensureAuthenticated, addComment)
 
-router.get('/comments', ensureAuthenticated, getComments)
+router.get('/:id/comments', ensureAuthenticated, getComments)
 
 module.exports = router

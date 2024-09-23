@@ -19,7 +19,7 @@ function FollowRequests() {
 
     const fetchUsers = async () => {
       try {
-        const response = await fetch('/users')
+        const response = await fetch(`/users/${userId}`)
         const data = await response.json()
         setUsers(data)
       } catch (error) {

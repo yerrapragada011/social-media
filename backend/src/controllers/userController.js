@@ -51,9 +51,26 @@ const updateUser = async (req, res) => {
   }
 }
 
-const getAllUsers = async (req, res) => {
+const getAllUsersToFollow = async (req, res) => {
   try {
-    const users = await prisma.user.findMany({
+    const userId = Number(req.params.id)
+
+    const followedUsers = await prisma.followRequest.findMany({
+      where: {
+        followerId: userId,
+        status: 'accepted'
+      },
+      select: {
+        followingId: true
+      }
+    })
+
+    const followedUserIds = followedUsers.map((follow) => follow.followingId)
+
+    const usersToFollow = await prisma.user.findMany({
+      where: {
+        AND: [{ id: { not: userId } }, { id: { notIn: followedUserIds } }]
+      },
       select: {
         id: true,
         username: true,
@@ -61,10 +78,10 @@ const getAllUsers = async (req, res) => {
       }
     })
 
-    res.json(users)
+    res.json(usersToFollow)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch users' })
+    res.status(500).json({ error: 'Failed to fetch users to follow' })
   }
 }
 
-module.exports = { getUser, updateUser, getAllUsers }
+module.exports = { getUser, updateUser, getAllUsersToFollow }

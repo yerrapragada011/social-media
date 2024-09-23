@@ -4,6 +4,6 @@ const { ensureAuthenticated } = require('../middleware/ensureAuthenticated')
 
 const router = express.Router()
 
-router.post('/like', ensureAuthenticated, likeAndUnlike)
+router.post('/:id/like', ensureAuthenticated, likeAndUnlike)
 
 module.exports = router

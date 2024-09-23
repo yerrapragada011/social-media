@@ -50,7 +50,6 @@ const getAllPosts = async (req, res) => {
       orderBy: { createdAt: 'desc' }
     })
 
-    console.log('Fetched posts:', posts)
     res.json(posts)
   } catch (error) {
     console.error('Error fetching posts:', error)
@@ -60,17 +59,31 @@ const getAllPosts = async (req, res) => {
 
 const getSinglePost = async (req, res) => {
   try {
+    const postId = Number(req.params.id)
+    const userId = req.user.id
+
     const post = await prisma.post.findUnique({
-      where: { id: Number(req.params.id) },
+      where: { id: postId },
       include: {
         author: true,
         likes: true,
-        comments: { include: { author: true } }
+        comments: {
+          include: { author: true }
+        }
       }
     })
+
     if (!post) return res.status(404).json({ message: 'Post not found' })
-    res.json(post)
+
+    const hasLiked = post.likes.some((like) => like.userId === userId)
+
+    res.json({
+      ...post,
+      currentUserId: userId,
+      hasLiked
+    })
   } catch (error) {
+    console.error('Error fetching post:', error)
     res.status(500).json({ error: 'Failed to fetch post' })
   }
 }

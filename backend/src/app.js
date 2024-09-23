@@ -53,8 +53,8 @@ app.use(passport.session())
 
 app.use('/', authRoutes)
 app.use('/posts', postRoutes)
-app.use('/posts/:id', commentRoutes)
-app.use('/posts/:id', likeRoutes)
+app.use('/posts', commentRoutes)
+app.use('/posts', likeRoutes)
 app.use('/users', followRoutes)
 app.use('/users', userRoutes)
 
