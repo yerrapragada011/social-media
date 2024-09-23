@@ -63,22 +63,22 @@ const deleteComment = async (req, res) => {
   }
 }
 
-const getUserComments = async (req, res) => {
-  try {
-    const userId = Number(req.params.id)
-    const comments = await prisma.comment.findMany({
-      where: { authorId: userId },
-      include: {
-        post: {
-          include: { author: true }
-        }
-      }
-    })
+// const getUserComments = async (req, res) => {
+//   try {
+//     const userId = Number(req.params.id)
+//     const comments = await prisma.comment.findMany({
+//       where: { authorId: userId },
+//       include: {
+//         post: {
+//           include: { author: true }
+//         }
+//       }
+//     })
 
-    res.json(comments)
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch user comments' })
-  }
-}
+//     res.json(comments)
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to fetch user comments' })
+//   }
+// }
 
-module.exports = { addComment, getComments, deleteComment, getUserComments }
+module.exports = { addComment, getComments, deleteComment }

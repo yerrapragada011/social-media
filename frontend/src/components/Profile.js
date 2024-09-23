@@ -51,7 +51,7 @@ function Profile() {
     } else if (activeTab === 'comments') {
       const fetchUserComments = async () => {
         try {
-          const response = await fetch(`/posts/${userId}/user-comments`)
+          const response = await fetch(`/users/${userId}/user-comments`)
           const data = await response.json()
           setUser((prevUser) => ({ ...prevUser, comments: data }))
         } catch (error) {
@@ -63,7 +63,7 @@ function Profile() {
     } else if (activeTab === 'likes') {
       const fetchUserLikedPosts = async () => {
         try {
-          const response = await fetch(`/posts/${userId}/liked-posts`)
+          const response = await fetch(`/users/${userId}/liked-posts`)
           const data = await response.json()
           setUser((prevUser) => ({ ...prevUser, likes: data }))
         } catch (error) {

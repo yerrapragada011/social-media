@@ -86,4 +86,46 @@ const getAllUsersToFollow = async (req, res) => {
   }
 }
 
-module.exports = { getUser, updateUser, getAllUsersToFollow }
+const getUserComments = async (req, res) => {
+  try {
+    const userId = Number(req.params.id)
+    const comments = await prisma.comment.findMany({
+      where: { authorId: userId },
+      include: {
+        post: {
+          include: { author: true }
+        }
+      }
+    })
+
+    res.json(comments)
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch user comments' })
+  }
+}
+
+const getUserLikedPosts = async (req, res) => {
+  try {
+    const userId = Number(req.params.id)
+    const likedPosts = await prisma.like.findMany({
+      where: { userId: userId },
+      include: {
+        post: {
+          include: { author: true }
+        }
+      }
+    })
+
+    res.json(likedPosts.map((like) => like.post))
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch liked posts' })
+  }
+}
+
+module.exports = {
+  getUser,
+  updateUser,
+  getAllUsersToFollow,
+  getUserComments,
+  getUserLikedPosts
+}
