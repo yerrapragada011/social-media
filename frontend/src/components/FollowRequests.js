@@ -11,7 +11,11 @@ function FollowRequests() {
     const fetchFollowRequests = async () => {
       try {
         const response = await fetch(
-          `${apiUrl}/users/${userId}/follow-requests`
+          `${apiUrl}/users/${userId}/follow-requests`,
+          {
+            method: 'GET',
+            credentials: 'include'
+          }
         )
         const data = await response.json()
         setFollowRequests(data)
@@ -22,7 +26,10 @@ function FollowRequests() {
 
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${apiUrl}/users/${userId}`)
+        const response = await fetch(`${apiUrl}/users/${userId}`, {
+          method: 'GET',
+          credentials: 'include'
+        })
         const data = await response.json()
         setUsers(data)
       } catch (error) {

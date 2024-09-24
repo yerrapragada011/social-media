@@ -12,7 +12,10 @@ function EditProfile() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch(`${apiUrl}/users/${userId}/profile`)
+        const response = await fetch(`${apiUrl}/users/${userId}/profile`, {
+          method: 'GET',
+          credentials: 'include'
+        })
         const data = await response.json()
         setUser(data)
         setBio(data.bio || '')

@@ -8,7 +8,10 @@ function Dashboard({ user }) {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${apiUrl}/posts`)
+        const response = await fetch(`${apiUrl}/posts`, {
+          method: 'GET',
+          credentials: 'include'
+        })
         const data = await response.json()
         setPosts(data)
       } catch (error) {

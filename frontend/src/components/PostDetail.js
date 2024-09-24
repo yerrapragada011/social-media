@@ -15,7 +15,10 @@ function PostDetail() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`${apiUrl}/posts/${postId}`)
+        const response = await fetch(`${apiUrl}/posts/${postId}`, {
+          method: 'GET',
+          credentials: 'include'
+        })
         const data = await response.json()
         setPost(data)
         setLikesCount(data.likes.length)
