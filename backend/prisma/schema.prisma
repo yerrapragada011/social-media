@@ -20,6 +20,7 @@ model User {
   password          String?
   githubId          String?  @unique
   profilePictureUrl String?  
+  bio               String?  
   posts             Post[]
   comments          Comment[]
   likes             Like[]

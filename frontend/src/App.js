@@ -13,6 +13,7 @@ import Profile from './components/Profile'
 import FollowRequests from './components/FollowRequests'
 import CreatePost from './components/CreatePost'
 import PostDetail from './components/PostDetail'
+import EditProfile from './components/EditProfile'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -116,7 +117,7 @@ function App() {
               path='/profile/:userId'
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  <Profile currentUser={user} />
                 </ProtectedRoute>
               }
             />
@@ -141,6 +142,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <PostDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/profile/:userId/edit'
+              element={
+                <ProtectedRoute>
+                  <EditProfile />
                 </ProtectedRoute>
               }
             />

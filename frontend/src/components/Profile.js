@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import Post from './Post'
 
-function Profile() {
+function Profile({ currentUser }) {
   const { userId } = useParams()
   const [user, setUser] = useState(null)
   const [followers, setFollowers] = useState([])
@@ -80,10 +80,19 @@ function Profile() {
   return (
     <div>
       <h1>{user.username}'s Profile</h1>
+
       <img
         src={user.profilePictureUrl || 'default-profile.png'}
         alt='Profile'
       />
+
+      <p>{user.bio || 'No bio provided'}</p>
+
+      {user.id === currentUser.id && (
+        <Link to={`/profile/${userId}/edit`}>
+          <button>Edit Profile</button>
+        </Link>
+      )}
 
       <nav style={{ display: 'flex', gap: '20px', margin: '20px 0px' }}>
         <button onClick={() => setActiveTab('posts')}>Posts</button>

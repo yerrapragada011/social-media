@@ -4,9 +4,7 @@ const cors = require('cors')
 const { Pool } = require('pg')
 const session = require('express-session')
 const pgSession = require('connect-pg-simple')(session)
-const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-// const path = require('path')
 const passport = require('./passport')
 const authRoutes = require('./routes/authRoutes')
 const postRoutes = require('./routes/postRoutes')
@@ -18,10 +16,10 @@ const userRoutes = require('./routes/userRoutes')
 const app = express()
 
 app.use(cors())
-
 app.use(cookieParser())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
 app.enable('trust proxy')
 
@@ -48,9 +46,8 @@ app.use(
 
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(express.json())
 
-// app.use(express.static(path.join(__dirname, '../../frontend/build')))
+app.use('/uploads', express.static('uploads'))
 
 app.use('/', authRoutes)
 app.use('/posts', postRoutes)
@@ -58,10 +55,6 @@ app.use('/posts', commentRoutes)
 app.use('/posts', likeRoutes)
 app.use('/users', followRoutes)
 app.use('/users', userRoutes)
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'))
-// })
 
 const PORT = process.env.PORT || 8000
 

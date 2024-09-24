@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const passport = require('passport')
 const { PrismaClient } = require('@prisma/client')
+const crypto = require('crypto')
 
 const prisma = new PrismaClient()
 
@@ -22,11 +23,18 @@ const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
+    const gravatarHash = crypto
+      .createHash('md5')
+      .update(email.trim().toLowerCase())
+      .digest('hex')
+    const gravatarUrl = `https://www.gravatar.com/avatar/${gravatarHash}?d=identicon`
+
     const newUser = await prisma.user.create({
       data: {
         username,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        profilePictureUrl: gravatarUrl
       }
     })
 

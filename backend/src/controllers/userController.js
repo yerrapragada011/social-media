@@ -41,14 +41,25 @@ const getUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-  const { profilePictureUrl } = req.body
+  const { bio } = req.body
+  const { id } = req.params
+  let profilePictureUrl = null
+
+  if (req.file) {
+    profilePictureUrl = `/uploads/${req.file.filename}`
+  }
+
   try {
     const updatedUser = await prisma.user.update({
-      where: { id: Number(req.params.id) },
-      data: { profilePictureUrl }
+      where: { id: parseInt(id) },
+      data: {
+        bio,
+        ...(profilePictureUrl && { profilePictureUrl })
+      }
     })
-    res.json(updatedUser)
+    res.json({ message: 'Profile updated successfully', user: updatedUser })
   } catch (error) {
+    console.error('Error updating profile:', error)
     res.status(500).json({ error: 'Failed to update profile' })
   }
 }
