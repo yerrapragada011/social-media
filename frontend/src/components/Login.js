@@ -26,7 +26,7 @@ function Login({ onLogin }) {
 
       if (response.ok && data.user) {
         onLogin(data.user)
-        navigate(`${apiUrl}/dashboard`)
+        navigate('/dashboard')
       } else {
         setError(data.message || 'Login failed')
       }
