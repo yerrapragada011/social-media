@@ -8,6 +8,8 @@ function Register() {
   const navigate = useNavigate()
   const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
+  console.log('API URL:', apiUrl)
+
   const handleRegister = async (e) => {
     e.preventDefault()
     try {
