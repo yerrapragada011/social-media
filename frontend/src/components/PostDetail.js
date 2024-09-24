@@ -91,6 +91,25 @@ function PostDetail() {
     }
   }
 
+  const handleDeletePost = async () => {
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      try {
+        const response = await fetch(`/posts/${postId}`, {
+          method: 'DELETE'
+        })
+
+        if (response.ok) {
+          alert('Post deleted successfully')
+          window.location.href = `/profile/${currentUserId}`
+        } else {
+          alert('Error deleting post')
+        }
+      } catch (error) {
+        console.error('Failed to delete post', error)
+      }
+    }
+  }
+
   if (loading) return <div>Loading...</div>
   if (!post) return <div>Post not found</div>
 
@@ -106,6 +125,12 @@ function PostDetail() {
         <strong>Likes: {likesCount}</strong>{' '}
         <button onClick={handleLikeUnlike}>{liked ? 'Unlike' : 'Like'}</button>
       </div>
+
+      {post.author.id === currentUserId && (
+        <button style={{ marginTop: '10px' }} onClick={handleDeletePost}>
+          Delete Post
+        </button>
+      )}
 
       <div>
         <h3>Comments</h3>

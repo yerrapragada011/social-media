@@ -88,4 +88,34 @@ const getSinglePost = async (req, res) => {
   }
 }
 
-module.exports = { newPost, getAllPosts, getSinglePost }
+const deletePost = async (req, res) => {
+  const postId = Number(req.params.id)
+  const userId = req.user.id
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: { id: postId }
+    })
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' })
+    }
+
+    if (post.authorId !== userId) {
+      return res
+        .status(403)
+        .json({ message: 'You are not authorized to delete this post' })
+    }
+
+    await prisma.post.delete({
+      where: { id: postId }
+    })
+
+    res.status(204).send()
+  } catch (error) {
+    console.error('Error deleting post:', error)
+    res.status(500).json({ error: 'Failed to delete post' })
+  }
+}
+
+module.exports = { newPost, getAllPosts, getSinglePost, deletePost }
