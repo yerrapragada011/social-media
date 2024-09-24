@@ -108,4 +108,20 @@ const returnUser = async (req, res) => {
   }
 }
 
-module.exports = { register, login, logout, githubLogin, returnUser }
+const dashboard = async (req, res) => {
+  if (req.user) {
+    res.json({
+      message: 'Welcome to your dashboard!',
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email,
+        profilePictureUrl: req.user.profilePictureUrl
+      }
+    })
+  } else {
+    res.status(401).json({ message: 'Unauthorized access' })
+  }
+}
+
+module.exports = { register, login, logout, githubLogin, returnUser, dashboard }
