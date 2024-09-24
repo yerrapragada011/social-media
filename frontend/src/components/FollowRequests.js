@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 
 function FollowRequests() {
   const [followRequests, setFollowRequests] = useState([])
@@ -74,7 +74,9 @@ function FollowRequests() {
       {followRequests.length > 0 ? (
         followRequests.map((request) => (
           <div key={request.follower.id}>
-            <span>{request.follower.username}</span>
+            <Link to={`/profile/${request.follower.id}`}>
+              <span>{request.follower.username}</span>
+            </Link>
             <button onClick={() => handleAccept(request.follower.id)}>
               Accept
             </button>
@@ -91,7 +93,9 @@ function FollowRequests() {
       {users.length > 0 ? (
         users.map((user) => (
           <div key={user.id}>
-            <span>{user.username}</span>
+            <Link to={`/profile/${user.id}`}>
+              <span style={{ marginRight: '10px' }}>{user.username}</span>
+            </Link>
             <button onClick={() => handleSendFollowRequest(user.id)}>
               Send Follow Request
             </button>
