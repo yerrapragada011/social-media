@@ -89,7 +89,7 @@ const githubLogin = async (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'GitHub login failed' })
     }
-    res.redirect('http://localhost:3000/dashboard')
+    res.redirect('https://social-media-six-kappa.vercel.app/dashboard')
   })
 }
 
