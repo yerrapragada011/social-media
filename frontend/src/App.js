@@ -48,7 +48,10 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/logout', { method: 'POST' })
+      await fetch(`${apiUrl}/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      })
       setUser(null)
     } catch (error) {
       console.error('Failed to log out', error)
