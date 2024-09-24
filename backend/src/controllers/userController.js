@@ -86,11 +86,28 @@ const getAllUsersToFollow = async (req, res) => {
       }
     })
 
+    const pendingFollowRequests = await prisma.followRequest.findMany({
+      where: {
+        followerId: userId,
+        status: 'pending'
+      },
+      select: {
+        followingId: true
+      }
+    })
+
     const followedUserIds = followedUsers.map((follow) => follow.followingId)
+    const pendingUserIds = pendingFollowRequests.map(
+      (request) => request.followingId
+    )
 
     const usersToFollow = await prisma.user.findMany({
       where: {
-        AND: [{ id: { not: userId } }, { id: { notIn: followedUserIds } }]
+        AND: [
+          { id: { not: userId } },
+          { id: { notIn: followedUserIds } },
+          { id: { notIn: pendingUserIds } }
+        ]
       },
       select: {
         id: true,
