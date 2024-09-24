@@ -10,11 +10,12 @@ function PostDetail() {
   const [newComment, setNewComment] = useState('')
   const [comments, setComments] = useState([])
   const [currentUserId, setCurrentUserId] = useState(null)
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/posts/${postId}`)
+        const response = await fetch(`${apiUrl}/posts/${postId}`)
         const data = await response.json()
         setPost(data)
         setLikesCount(data.likes.length)
@@ -33,7 +34,10 @@ function PostDetail() {
 
   const handleLikeUnlike = async () => {
     try {
-      const response = await fetch(`/posts/${postId}/like`, { method: 'POST' })
+      const response = await fetch(`${apiUrl}/posts/${postId}/like`, {
+        method: 'POST',
+        credentials: 'include'
+      })
 
       if (response.ok) {
         setLikesCount(likesCount + (liked ? -1 : 1))
@@ -53,10 +57,11 @@ function PostDetail() {
     }
 
     try {
-      const response = await fetch(`/posts/${postId}/comments`, {
+      const response = await fetch(`${apiUrl}/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          credentials: 'include'
         },
         body: JSON.stringify({ content: newComment })
       })
@@ -76,9 +81,13 @@ function PostDetail() {
   const handleDeleteComment = async (commentId) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
       try {
-        const response = await fetch(`/posts/${postId}/comments/${commentId}`, {
-          method: 'DELETE'
-        })
+        const response = await fetch(
+          `${apiUrl}/posts/${postId}/comments/${commentId}`,
+          {
+            method: 'DELETE',
+            credentials: 'include'
+          }
+        )
 
         if (response.ok) {
           setComments(comments.filter((comment) => comment.id !== commentId))
@@ -94,8 +103,9 @@ function PostDetail() {
   const handleDeletePost = async () => {
     if (window.confirm('Are you sure you want to delete this post?')) {
       try {
-        const response = await fetch(`/posts/${postId}`, {
-          method: 'DELETE'
+        const response = await fetch(`${apiUrl}/posts/${postId}`, {
+          method: 'DELETE',
+          credentials: 'include'
         })
 
         if (response.ok) {

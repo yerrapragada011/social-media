@@ -18,11 +18,12 @@ import EditProfile from './components/EditProfile'
 function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch('/user')
+        const response = await fetch(`${apiUrl}/user`)
         const data = await response.json()
         if (data.user) {
           setUser(data.user)

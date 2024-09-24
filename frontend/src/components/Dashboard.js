@@ -3,11 +3,12 @@ import Post from './Post'
 
 function Dashboard({ user }) {
   const [posts, setPosts] = useState([])
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('/posts')
+        const response = await fetch(`${apiUrl}/posts`)
         const data = await response.json()
         setPosts(data)
       } catch (error) {

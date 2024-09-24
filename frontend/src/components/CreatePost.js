@@ -5,6 +5,7 @@ function CreatePost() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const navigate = useNavigate()
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -15,10 +16,11 @@ function CreatePost() {
     }
 
     try {
-      const response = await fetch('/posts', {
+      const response = await fetch(`${apiUrl}/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content })
+        body: JSON.stringify({ title, content }),
+        credentials: 'include'
       })
 
       if (response.ok) {

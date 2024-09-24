@@ -7,11 +7,12 @@ function EditProfile() {
   const [bio, setBio] = useState('')
   const [profilePicture, setProfilePicture] = useState(null)
   const [user, setUser] = useState(null)
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch(`/users/${userId}/profile`)
+        const response = await fetch(`${apiUrl}/users/${userId}/profile`)
         const data = await response.json()
         setUser(data)
         setBio(data.bio || '')
@@ -22,7 +23,7 @@ function EditProfile() {
     }
 
     fetchUserProfile()
-  }, [userId])
+  }, [apiUrl, userId])
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault()
@@ -34,9 +35,10 @@ function EditProfile() {
     }
 
     try {
-      const response = await fetch(`/users/${userId}/profile`, {
+      const response = await fetch(`${apiUrl}/users/${userId}/profile`, {
         method: 'PUT',
-        body: formData
+        body: formData,
+        credentials: 'include'
       })
 
       if (response.ok) {

@@ -8,11 +8,12 @@ function Profile({ currentUser }) {
   const [followers, setFollowers] = useState([])
   const [following, setFollowing] = useState([])
   const [activeTab, setActiveTab] = useState('posts')
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`/users/${userId}/profile`)
+        const response = await fetch(`${apiUrl}/users/${userId}/profile`)
         const data = await response.json()
         setUser(data)
       } catch (error) {
@@ -31,7 +32,7 @@ function Profile({ currentUser }) {
     if (activeTab === 'followers') {
       const fetchFollowers = async () => {
         try {
-          const response = await fetch(`/users/${userId}/followers`)
+          const response = await fetch(`${apiUrl}/users/${userId}/followers`)
           const data = await response.json()
           setFollowers(data)
         } catch (error) {
@@ -43,7 +44,7 @@ function Profile({ currentUser }) {
     } else if (activeTab === 'followings') {
       const fetchFollowing = async () => {
         try {
-          const response = await fetch(`/users/${userId}/following`)
+          const response = await fetch(`${apiUrl}/users/${userId}/following`)
           const data = await response.json()
           setFollowing(data)
         } catch (error) {
@@ -55,7 +56,7 @@ function Profile({ currentUser }) {
     } else if (activeTab === 'comments') {
       const fetchUserComments = async () => {
         try {
-          const response = await fetch(`/users/${userId}/user-comments`)
+          const response = await fetch(`${apiUrl}/users/${userId}/user-comments`)
           const data = await response.json()
           setUser((prevUser) => ({ ...prevUser, comments: data }))
         } catch (error) {
@@ -67,7 +68,7 @@ function Profile({ currentUser }) {
     } else if (activeTab === 'likes') {
       const fetchUserLikedPosts = async () => {
         try {
-          const response = await fetch(`/users/${userId}/liked-posts`)
+          const response = await fetch(`${apiUrl}/users/${userId}/liked-posts`)
           const data = await response.json()
           setUser((prevUser) => ({ ...prevUser, likes: data }))
         } catch (error) {

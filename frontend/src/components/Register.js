@@ -6,14 +6,16 @@ function Register() {
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
   const navigate = useNavigate()
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   const handleRegister = async (e) => {
     e.preventDefault()
     try {
-      const response = await fetch('/register', {
+      const response = await fetch(`${apiUrl}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, username })
+        body: JSON.stringify({ email, password, username }),
+        credentials: 'include'
       })
       const data = await response.json()
       if (data.user || response.ok) {

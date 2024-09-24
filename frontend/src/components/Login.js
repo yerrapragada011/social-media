@@ -7,6 +7,7 @@ function Login({ onLogin }) {
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -14,10 +15,11 @@ function Login({ onLogin }) {
     setError(null)
 
     try {
-      const response = await fetch('/login', {
+      const response = await fetch(`${apiUrl}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
+        credentials: 'include'
       })
 
       const data = await response.json()
@@ -36,7 +38,7 @@ function Login({ onLogin }) {
   }
 
   const handleGitHubLogin = () => {
-    window.location.replace('http://localhost:8000/github')
+    window.location.replace(`${apiUrl}/github`)
   }
 
   return (

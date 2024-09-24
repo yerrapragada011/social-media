@@ -5,11 +5,14 @@ function FollowRequests() {
   const [followRequests, setFollowRequests] = useState([])
   const [users, setUsers] = useState([])
   const { userId } = useParams()
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   useEffect(() => {
     const fetchFollowRequests = async () => {
       try {
-        const response = await fetch(`/users/${userId}/follow-requests`)
+        const response = await fetch(
+          `${apiUrl}/users/${userId}/follow-requests`
+        )
         const data = await response.json()
         setFollowRequests(data)
       } catch (error) {
@@ -19,7 +22,7 @@ function FollowRequests() {
 
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`/users/${userId}`)
+        const response = await fetch(`${apiUrl}/users/${userId}`)
         const data = await response.json()
         setUsers(data)
       } catch (error) {
@@ -33,7 +36,10 @@ function FollowRequests() {
 
   const handleAccept = async (id) => {
     try {
-      await fetch(`/users/${id}/accept-follow`, { method: 'POST' })
+      await fetch(`${apiUrl}/users/${id}/accept-follow`, {
+        method: 'POST',
+        credentials: 'include'
+      })
       setFollowRequests(
         followRequests.filter((request) => request.follower.id !== id)
       )
@@ -44,7 +50,10 @@ function FollowRequests() {
 
   const handleDecline = async (id) => {
     try {
-      await fetch(`/users/${id}/decline-follow`, { method: 'DELETE' })
+      await fetch(`${apiUrl}/users/${id}/decline-follow`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
       setFollowRequests(
         followRequests.filter((request) => request.follower.id !== id)
       )
@@ -55,7 +64,10 @@ function FollowRequests() {
 
   const handleSendFollowRequest = async (id) => {
     try {
-      const response = await fetch(`/users/${id}/follow`, { method: 'POST' })
+      const response = await fetch(`${apiUrl}/users/${id}/follow`, {
+        method: 'POST',
+        credentials: 'include'
+      })
       if (response.ok) {
         alert('Follow request sent!')
         setUsers(users.filter((user) => user.id !== id))
