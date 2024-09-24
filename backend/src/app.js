@@ -15,7 +15,13 @@ const userRoutes = require('./routes/userRoutes')
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: 'https://social-media-six-kappa.vercel.app',
+    credentials: true
+  })
+)
+
 app.use(cookieParser())
 
 app.use(express.urlencoded({ extended: true }))
