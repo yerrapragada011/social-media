@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const cloudinary = require('cloudinary').v2
 
 const getUser = async (req, res) => {
   try {
@@ -43,10 +44,17 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const { bio } = req.body
   const { id } = req.params
-  let profilePictureUrl = null
+  let profilePictureUrl = req.file ? req.file.path : null
 
   if (req.file) {
-    profilePictureUrl = `/uploads/${req.file.filename}`
+    try {
+      const result = await cloudinary.uploader.upload(req.file.path)
+      profilePictureUrl = result.secure_url
+    } catch (error) {
+      return res.status(500).json({ error: 'Failed to upload image' })
+    }
+  } else {
+    console.log('No file received, proceeding without image upload.')
   }
 
   try {
@@ -59,7 +67,7 @@ const updateUser = async (req, res) => {
     })
     res.json({ message: 'Profile updated successfully', user: updatedUser })
   } catch (error) {
-    console.error('Error updating profile:', error)
+    console.error('Error updating profile:', JSON.stringify(error, null, 2))
     res.status(500).json({ error: 'Failed to update profile' })
   }
 }

@@ -1,6 +1,7 @@
 const express = require('express')
 const multer = require('multer')
-const path = require('path')
+const { v2: cloudinary } = require('cloudinary')
+const { CloudinaryStorage } = require('multer-storage-cloudinary')
 const {
   getUser,
   updateUser,
@@ -12,33 +13,23 @@ const { ensureAuthenticated } = require('../middleware/ensureAuthenticated')
 
 const router = express.Router()
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads'))
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'profile_pictures',
+    allowed_formats: ['jpeg', 'jpg', 'png', 'gif', 'webp']
   }
 })
 
-function checkFileType(file, cb) {
-  const filetypes = /jpeg|jpg|png|gif/
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
-  const mimetype = filetypes.test(file.mimetype)
-
-  if (mimetype && extname) {
-    return cb(null, true)
-  } else {
-    cb('Error: Images Only!')
-  }
-}
-
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb)
-  }
+  limits: { fileSize: 10 * 1024 * 1024 }
 })
 
 router.get('/:id/profile', ensureAuthenticated, getUser)
@@ -46,7 +37,15 @@ router.get('/:id/profile', ensureAuthenticated, getUser)
 router.put(
   '/:id/profile',
   ensureAuthenticated,
-  upload.single('profilePicture'),
+  (req, res, next) => {
+    upload.single('profilePicture')(req, res, (err) => {
+      if (err) {
+        console.error('Multer error:', err)
+        return res.status(400).json({ error: 'Multer error: ' + err.message })
+      }
+      next()
+    })
+  },
   updateUser
 )
 

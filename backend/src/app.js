@@ -47,8 +47,6 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use('/uploads', express.static('uploads'))
-
 app.use('/', authRoutes)
 app.use('/posts', postRoutes)
 app.use('/posts', commentRoutes)
