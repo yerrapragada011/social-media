@@ -89,7 +89,7 @@ const githubLogin = async (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'GitHub login failed' })
     }
-    res.redirect('/dashboard')
+    res.redirect('https://social-media-six-kappa.vercel.app/dashboard')
   })
 }
 
@@ -108,20 +108,4 @@ const returnUser = async (req, res) => {
   }
 }
 
-const dashboard = async (req, res) => {
-  if (req.user) {
-    res.json({
-      message: 'Welcome to your dashboard!',
-      user: {
-        id: req.user.id,
-        username: req.user.username,
-        email: req.user.email,
-        profilePictureUrl: req.user.profilePictureUrl
-      }
-    })
-  } else {
-    res.status(401).json({ message: 'Unauthorized access' })
-  }
-}
-
-module.exports = { register, login, logout, githubLogin, returnUser, dashboard }
+module.exports = { register, login, logout, githubLogin, returnUser }

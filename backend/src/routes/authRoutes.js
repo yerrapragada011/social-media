@@ -4,8 +4,7 @@ const {
   login,
   logout,
   githubLogin,
-  returnUser,
-  dashboard
+  returnUser
 } = require('../controllers/authController')
 const passport = require('../passport')
 const { ensureAuthenticated } = require('../middleware/ensureAuthenticated')
@@ -31,7 +30,5 @@ router.get(
 )
 
 router.get('/user', ensureAuthenticated, returnUser)
-
-router.get('/dashboard', ensureAuthenticated, dashboard)
 
 module.exports = router

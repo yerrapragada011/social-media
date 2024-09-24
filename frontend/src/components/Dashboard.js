@@ -3,47 +3,29 @@ import Post from './Post'
 
 function Dashboard({ user }) {
   const [posts, setPosts] = useState([])
-  const [dashboardUser, setDashboardUser] = useState(null)
   const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchPosts = async () => {
       try {
-        const userResponse = await fetch(`${apiUrl}/user`, {
+        const response = await fetch(`${apiUrl}/posts`, {
           method: 'GET',
           credentials: 'include'
         })
-
-        if (!userResponse.ok) {
-          throw new Error('Failed to fetch user data')
-        }
-
-        const userData = await userResponse.json()
-        setDashboardUser(userData.user)
-
-        const postsResponse = await fetch(`${apiUrl}/posts`, {
-          method: 'GET',
-          credentials: 'include'
-        })
-
-        const postsData = await postsResponse.json()
-        setPosts(postsData)
+        const data = await response.json()
+        setPosts(data)
       } catch (error) {
-        console.error('Failed to fetch data:', error)
+        console.error('Failed to fetch posts')
       }
     }
 
-    fetchDashboardData()
-  }, [apiUrl])
+    fetchPosts()
+  }, [])
 
   return (
     <div>
       <h1>Dashboard</h1>
-      {dashboardUser ? (
-        <p>Welcome, {dashboardUser.username}!</p>
-      ) : (
-        <p>Loading user information...</p>
-      )}
+      <p>Welcome, {user?.username}!</p>
       <h1>Posts:</h1>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {posts.length > 0 ? (
