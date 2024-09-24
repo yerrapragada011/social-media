@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 
 function PostDetail() {
   const { postId } = useParams()
@@ -98,7 +98,10 @@ function PostDetail() {
     <div className='post-detail'>
       <h1>{post.title}</h1>
       <p>{post.content}</p>
-      <p>Author: {post.author.username}</p>
+      <p>
+        Author:{' '}
+        <Link to={`/profile/${post.author.id}`}>{post.author.username}</Link>
+      </p>
       <div>
         <strong>Likes: {likesCount}</strong>{' '}
         <button onClick={handleLikeUnlike}>{liked ? 'Unlike' : 'Like'}</button>

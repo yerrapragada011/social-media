@@ -24,6 +24,10 @@ function Profile({ currentUser }) {
   }, [userId])
 
   useEffect(() => {
+    setActiveTab('posts')
+  }, [userId])
+
+  useEffect(() => {
     if (activeTab === 'followers') {
       const fetchFollowers = async () => {
         try {
@@ -125,9 +129,9 @@ function Profile({ currentUser }) {
           >
             {following.length > 0 ? (
               following.map((follow) => (
-                <div key={follow.id}>
+                <Link to={`/profile/${follow.following.id}`}>
                   <p>{follow.following.username}</p>
-                </div>
+                </Link>
               ))
             ) : (
               <p>Not following anyone</p>
@@ -144,9 +148,9 @@ function Profile({ currentUser }) {
           >
             {followers.length > 0 ? (
               followers.map((follower) => (
-                <div key={follower.id}>
+                <Link to={`/profile/${follower.follower.id}`}>
                   <p>{follower.follower.username}</p>
-                </div>
+                </Link>
               ))
             ) : (
               <p>No followers to display</p>
