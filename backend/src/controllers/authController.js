@@ -89,7 +89,7 @@ const githubLogin = async (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'GitHub login failed' })
     }
-    res.json({ message: 'Login successful', user: req.user })
+    res.redirect('/dashboard')
   })
 }
 
