@@ -25,7 +25,7 @@ function Profile({ currentUser }) {
     }
 
     fetchProfile()
-  }, [userId])
+  }, [apiUrl, userId])
 
   useEffect(() => {
     setActiveTab('posts')
@@ -65,13 +65,10 @@ function Profile({ currentUser }) {
     } else if (activeTab === 'comments') {
       const fetchUserComments = async () => {
         try {
-          const response = await fetch(
-            `${apiUrl}/users/${userId}/user-comments`,
-            {
-              method: 'GET',
-              credentials: 'include'
-            }
-          )
+          const response = await fetch(`${apiUrl}/users/${userId}/user-comments`, {
+            method: 'GET',
+            credentials: 'include'
+          })
           const data = await response.json()
           setUser((prevUser) => ({ ...prevUser, comments: data }))
         } catch (error) {
@@ -83,13 +80,10 @@ function Profile({ currentUser }) {
     } else if (activeTab === 'likes') {
       const fetchUserLikedPosts = async () => {
         try {
-          const response = await fetch(
-            `${apiUrl}/users/${userId}/liked-posts`,
-            {
-              method: 'GET',
-              credentials: 'include'
-            }
-          )
+          const response = await fetch(`${apiUrl}/users/${userId}/liked-posts`, {
+            method: 'GET',
+            credentials: 'include'
+          })
           const data = await response.json()
           setUser((prevUser) => ({ ...prevUser, likes: data }))
         } catch (error) {
@@ -99,7 +93,45 @@ function Profile({ currentUser }) {
 
       fetchUserLikedPosts()
     }
-  }, [activeTab, userId])
+  }, [apiUrl, activeTab, userId])
+
+  const handleUnfollow = async (followingId) => {
+    try {
+      const response = await fetch(`${apiUrl}/users/${followingId}/unfollow`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+      if (response.ok) {
+        setFollowing(
+          following.filter((follow) => follow.following.id !== followingId)
+        )
+        alert('Unfollowed successfully')
+      } else {
+        alert('Failed to unfollow')
+      }
+    } catch (error) {
+      console.error('Failed to unfollow', error)
+    }
+  }
+
+  const handleRemoveFollower = async (followerId) => {
+    try {
+      const response = await fetch(`${apiUrl}/users/${followerId}/remove-follower`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
+      if (response.ok) {
+        setFollowers(
+          followers.filter((follower) => follower.follower.id !== followerId)
+        )
+        alert('Follower removed successfully')
+      } else {
+        alert('Failed to remove follower')
+      }
+    } catch (error) {
+      console.error('Failed to remove follower', error)
+    }
+  }
 
   if (!user) return <div>Loading...</div>
 
@@ -151,9 +183,16 @@ function Profile({ currentUser }) {
           >
             {following.length > 0 ? (
               following.map((follow) => (
-                <Link to={`/profile/${follow.following.id}`}>
-                  <p>{follow.following.username}</p>
-                </Link>
+                <div key={follow.following.id}>
+                  <Link to={`/profile/${follow.following.id}`}>
+                    {follow.following.username}
+                  </Link>
+                  {parseInt(userId) === currentUser.id && (
+                    <button onClick={() => handleUnfollow(follow.following.id)}>
+                      Unfollow
+                    </button>
+                  )}
+                </div>
               ))
             ) : (
               <p>Not following anyone</p>
@@ -170,9 +209,18 @@ function Profile({ currentUser }) {
           >
             {followers.length > 0 ? (
               followers.map((follower) => (
-                <Link to={`/profile/${follower.follower.id}`}>
-                  <p>{follower.follower.username}</p>
-                </Link>
+                <div key={follower.follower.id}>
+                  <Link to={`/profile/${follower.follower.id}`}>
+                    {follower.follower.username}
+                  </Link>
+                  {parseInt(userId) === currentUser.id && (
+                    <button
+                      onClick={() => handleRemoveFollower(follower.follower.id)}
+                    >
+                      Remove Follower
+                    </button>
+                  )}
+                </div>
               ))
             ) : (
               <p>No followers to display</p>

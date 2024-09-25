@@ -5,7 +5,9 @@ const {
   deleteFollowRequest,
   getFollowRequests,
   getFollowers,
-  getFollowing
+  getFollowing,
+  removeFollower,
+  unfollow
 } = require('../controllers/followController')
 const { ensureAuthenticated } = require('../middleware/ensureAuthenticated')
 
@@ -22,5 +24,9 @@ router.get('/:id/follow-requests', ensureAuthenticated, getFollowRequests)
 router.get('/:id/followers', ensureAuthenticated, getFollowers)
 
 router.get('/:id/following', ensureAuthenticated, getFollowing)
+
+router.delete('/:id/remove-follower', ensureAuthenticated, removeFollower)
+
+router.delete('/:id/unfollow', ensureAuthenticated, unfollow)
 
 module.exports = router

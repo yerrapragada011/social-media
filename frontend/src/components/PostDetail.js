@@ -33,7 +33,7 @@ function PostDetail() {
     }
 
     fetchPost()
-  }, [postId])
+  }, [apiUrl, postId])
 
   const handleLikeUnlike = async () => {
     try {

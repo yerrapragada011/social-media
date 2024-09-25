@@ -39,7 +39,7 @@ function App() {
     }
 
     checkAuth()
-  }, [])
+  }, [apiUrl])
 
   if (loading) {
     return <div>Loading...</div>
@@ -51,7 +51,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${apiUrl}/logout`, {
+      await fetch(`/logout`, {
         method: 'POST',
         credentials: 'include'
       })

@@ -39,7 +39,7 @@ function FollowRequests() {
 
     fetchFollowRequests()
     fetchUsers()
-  }, [userId])
+  }, [apiUrl, userId])
 
   const handleAccept = async (id) => {
     try {

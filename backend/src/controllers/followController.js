@@ -176,11 +176,67 @@ const getFollowing = async (req, res) => {
   }
 }
 
+const removeFollower = async (req, res) => {
+  const followerId = Number(req.params.id)
+
+  try {
+    const existingFollower = await prisma.followRequest.findFirst({
+      where: {
+        followerId,
+        followingId: req.user.id,
+        status: 'accepted'
+      }
+    })
+
+    if (!existingFollower) {
+      return res.status(404).json({ message: 'Follower not found' })
+    }
+
+    await prisma.followRequest.delete({
+      where: { id: existingFollower.id }
+    })
+
+    res.json({ message: 'Follower removed successfully' })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to remove follower' })
+  }
+}
+
+const unfollow = async (req, res) => {
+  const followingId = Number(req.params.id)
+
+  try {
+    const existingFollowing = await prisma.followRequest.findFirst({
+      where: {
+        followerId: req.user.id,
+        followingId,
+        status: 'accepted'
+      }
+    })
+
+    if (!existingFollowing) {
+      return res
+        .status(404)
+        .json({ message: 'You are not following this user' })
+    }
+
+    await prisma.followRequest.delete({
+      where: { id: existingFollowing.id }
+    })
+
+    res.json({ message: 'Unfollowed successfully' })
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to unfollow' })
+  }
+}
+
 module.exports = {
   sendFollowRequest,
   acceptFollowRequest,
   deleteFollowRequest,
   getFollowRequests,
   getFollowers,
-  getFollowing
+  getFollowing,
+  removeFollower,
+  unfollow
 }
