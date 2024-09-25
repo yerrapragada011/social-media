@@ -108,4 +108,8 @@ const returnUser = async (req, res) => {
   }
 }
 
-module.exports = { register, login, logout, githubLogin, returnUser }
+const redirect = async (req, res) => {
+  res.redirect('https://social-media-six-kappa.vercel.app/dashboard')
+}
+
+module.exports = { register, login, logout, githubLogin, returnUser, redirect }
