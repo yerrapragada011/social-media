@@ -4,7 +4,8 @@ import {
   Routes,
   Route,
   Navigate,
-  Link, useNavigate
+  Link,
+  useNavigate
 } from 'react-router-dom'
 import Login from './components/Login'
 import Register from './components/Register'
@@ -41,7 +42,7 @@ function App() {
     }
 
     checkAuth()
-  }, [])
+  }, [apiUrl])
 
   if (loading) {
     return <div>Loading...</div>
