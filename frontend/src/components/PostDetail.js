@@ -63,9 +63,9 @@ function PostDetail() {
       const response = await fetch(`${apiUrl}/posts/${postId}/comments`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          credentials: 'include'
+          'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({ content: newComment })
       })
 
