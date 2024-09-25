@@ -89,8 +89,8 @@ const githubLogin = async (req, res) => {
     if (err) {
       return res.status(500).json({ message: 'GitHub login failed' })
     }
-    return res.json({ message: 'Login successful', user })
-  })(req, res)
+    return res.json({ message: 'Login successful', user: req.user })
+  })
 }
 
 const returnUser = async (req, res) => {
