@@ -4,8 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
-  Link,
-  useNavigate
+  Link
 } from 'react-router-dom'
 import Login from './components/Login'
 import Register from './components/Register'
@@ -19,7 +18,6 @@ import EditProfile from './components/EditProfile'
 function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
   const apiUrl = process.env.REACT_APP_BACKEND_API_URL
 
   useEffect(() => {
@@ -32,7 +30,6 @@ function App() {
         const data = await response.json()
         if (data.user) {
           setUser(data.user)
-          navigate('/dashboard')
         }
       } catch (error) {
         console.error('Error checking authentication', error)
