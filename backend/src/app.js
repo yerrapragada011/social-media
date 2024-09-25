@@ -5,6 +5,7 @@ const { Pool } = require('pg')
 const session = require('express-session')
 const pgSession = require('connect-pg-simple')(session)
 const cookieParser = require('cookie-parser')
+const path = require('path')
 const passport = require('./passport')
 const authRoutes = require('./routes/authRoutes')
 const postRoutes = require('./routes/postRoutes')
@@ -61,6 +62,12 @@ app.use('/posts', commentRoutes)
 app.use('/posts', likeRoutes)
 app.use('/users', followRoutes)
 app.use('/users', userRoutes)
+
+app.use(express.static(path.join(__dirname, '../../frontend/build')))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/build', 'index.html'))
+})
 
 const PORT = process.env.PORT || 8000
 
